@@ -124,11 +124,7 @@ class LessonController extends Controller
                 $lesson->can_access = $lesson->is_free || $isSubscribed || $user->isAdmin();
                 $lesson->has_video = $lesson->hasVideo();
                 
-                if ($lesson->can_access && $lesson->has_video) {
-                    $lesson->video_stream_url = $lesson->getVideoStreamUrl();
-                    $lesson->video_duration_formatted = $lesson->getFormattedDuration();
-                    $lesson->video_size_formatted = $lesson->getFormattedSize();
-                }
+
             });
 
             return $this->successResponse([

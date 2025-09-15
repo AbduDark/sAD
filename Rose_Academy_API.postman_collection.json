@@ -1,0 +1,1327 @@
+
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+		"name": "Rose Academy API",
+		"description": "مجموعة شاملة من APIs منصة روز الأكاديمية للكورسات والدروس والفيديوهات",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{auth_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5000/api",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "🔐 Authentication",
+			"item": [
+				{
+					"name": "تسجيل حساب جديد",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"أحمد محمد\",\n    \"email\": \"ahmed@example.com\",\n    \"password\": \"123456789\",\n    \"password_confirmation\": \"123456789\",\n    \"phone\": \"01234567890\",\n    \"gender\": \"male\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					}
+				},
+				{
+					"name": "تسجيل الدخول",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.data && jsonData.data.token) {",
+									"        pm.collectionVariables.set('auth_token', jsonData.data.token);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"ahmed@example.com\",\n    \"password\": \"123456789\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					}
+				},
+				{
+					"name": "الملف الشخصي",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/auth/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"profile"
+							]
+						}
+					}
+				},
+				{
+					"name": "تسجيل الخروج",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/auth/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "📚 Courses",
+			"item": [
+				{
+					"name": "جلب جميع الكورسات",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/courses?search=&level=&language=&grade=&min_price=&max_price=&sort_by=created_at&sort_order=desc&per_page=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"courses"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": ""
+								},
+								{
+									"key": "level",
+									"value": ""
+								},
+								{
+									"key": "language",
+									"value": ""
+								},
+								{
+									"key": "grade",
+									"value": ""
+								},
+								{
+									"key": "min_price",
+									"value": ""
+								},
+								{
+									"key": "max_price",
+									"value": ""
+								},
+								{
+									"key": "sort_by",
+									"value": "created_at"
+								},
+								{
+									"key": "sort_order",
+									"value": "desc"
+								},
+								{
+									"key": "per_page",
+									"value": "10"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "تفاصيل كورس محدد",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/courses/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"courses",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "إنشاء كورس جديد (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "دورة البرمجة المتقدمة",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "دورة شاملة في البرمجة باستخدام PHP و Laravel",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "299.99",
+									"type": "text"
+								},
+								{
+									"key": "level",
+									"value": "intermediate",
+									"type": "text"
+								},
+								{
+									"key": "duration_hours",
+									"value": "40",
+									"type": "text"
+								},
+								{
+									"key": "requirements",
+									"value": "معرفة أساسيات البرمجة",
+									"type": "text"
+								},
+								{
+									"key": "instructor_name",
+									"value": "أ.روز",
+									"type": "text"
+								},
+								{
+									"key": "language",
+									"value": "ar",
+									"type": "text"
+								},
+								{
+									"key": "grade",
+									"value": "الثاني",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/courses",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"courses"
+							]
+						}
+					}
+				},
+				{
+					"name": "تحديث كورس (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "دورة البرمجة المتقدمة - محدثة",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "دورة شاملة ومحدثة في البرمجة",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "349.99",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/courses/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"courses",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "حذف كورس (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/courses/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"courses",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "تقييمات الكورس",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/courses/1/ratings",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"courses",
+								"1",
+								"ratings"
+							]
+						}
+					}
+				},
+				{
+					"name": "إضافة تقييم للكورس",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"course_id\": 1,\n    \"rating\": 5,\n    \"review\": \"كورس ممتاز ومفيد جداً\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/ratings",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"ratings"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "📖 Lessons",
+			"item": [
+				{
+					"name": "جلب دروس الكورس",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/courses/1/lessons",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"courses",
+								"1",
+								"lessons"
+							]
+						}
+					}
+				},
+				{
+					"name": "تفاصيل درس محدد",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/lessons/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"lessons",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "جلب جميع الدروس (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/lessons?search=&course_id=&target_gender=&video_status=&per_page=15",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"lessons"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": ""
+								},
+								{
+									"key": "course_id",
+									"value": ""
+								},
+								{
+									"key": "target_gender",
+									"value": ""
+								},
+								{
+									"key": "video_status",
+									"value": ""
+								},
+								{
+									"key": "per_page",
+									"value": "15"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "إنشاء درس جديد (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"course_id\": 1,\n    \"title\": \"مقدمة في Laravel\",\n    \"description\": \"تعلم أساسيات Laravel Framework\",\n    \"content\": \"محتوى الدرس التفصيلي...\",\n    \"order\": 1,\n    \"duration_minutes\": 45,\n    \"is_free\": true,\n    \"target_gender\": \"both\",\n    \"is_video_protected\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/lessons",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"lessons"
+							]
+						}
+					}
+				},
+				{
+					"name": "تحديث درس (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"مقدمة في Laravel - محدث\",\n    \"description\": \"تعلم أساسيات Laravel Framework بشكل محدث\",\n    \"duration_minutes\": 50,\n    \"is_free\": false\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/lessons/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"lessons",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "حذف درس (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/lessons/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"lessons",
+								"1"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🎥 Videos",
+			"item": [
+				{
+					"name": "رفع فيديو للدرس (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "video",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/lessons/1/video/upload",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"lessons",
+								"1",
+								"video",
+								"upload"
+							]
+						}
+					}
+				},
+				{
+					"name": "تشغيل فيديو محمي",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/lessons/1/video/stream?token=video_token&t=timestamp",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"lessons",
+								"1",
+								"video",
+								"stream"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "video_token"
+								},
+								{
+									"key": "t",
+									"value": "timestamp"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "حذف فيديو الدرس (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/lessons/1/video",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"lessons",
+								"1",
+								"video"
+							]
+						}
+					}
+				},
+				{
+					"name": "معلومات فيديو الدرس (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/lessons/1/video/info",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"lessons",
+								"1",
+								"video",
+								"info"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🎵 Playlists",
+			"item": [
+				{
+					"name": "بلايليست الكورس",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/courses/1/playlist",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"courses",
+								"1",
+								"playlist"
+							]
+						}
+					}
+				},
+				{
+					"name": "الدرس التالي",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/courses/1/lessons/1/next",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"courses",
+								"1",
+								"lessons",
+								"1",
+								"next"
+							]
+						}
+					}
+				},
+				{
+					"name": "الدرس السابق",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/courses/1/lessons/1/previous",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"courses",
+								"1",
+								"lessons",
+								"1",
+								"previous"
+							]
+						}
+					}
+				},
+				{
+					"name": "موقع الدرس في البلايليست",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/courses/1/lessons/1/position",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"courses",
+								"1",
+								"lessons",
+								"1",
+								"position"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "💰 Subscriptions",
+			"item": [
+				{
+					"name": "الاشتراك في كورس",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"course_id\": 1,\n    \"vodafone_number\": \"01234567890\",\n    \"parent_phone\": \"01098765432\",\n    \"student_info\": \"طالب في الصف الثاني الثانوي\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/subscribe",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"subscribe"
+							]
+						}
+					}
+				},
+				{
+					"name": "اشتراكاتي",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/my-subscriptions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"my-subscriptions"
+							]
+						}
+					}
+				},
+				{
+					"name": "حالة الاشتراك في كورس",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/subscriptions/status/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"subscriptions",
+								"status",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "تجديد الاشتراك",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"subscription_id\": 1,\n    \"vodafone_number\": \"01234567890\",\n    \"parent_phone\": \"01098765432\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/subscriptions/renew",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"subscriptions",
+								"renew"
+							]
+						}
+					}
+				},
+				{
+					"name": "إلغاء الاشتراك",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/subscriptions/1/cancel",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"subscriptions",
+								"1",
+								"cancel"
+							]
+						}
+					}
+				},
+				{
+					"name": "الاشتراكات المنتهية",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/expired-subscriptions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"expired-subscriptions"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🔧 Admin - Subscriptions",
+			"item": [
+				{
+					"name": "جميع الاشتراكات (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/subscriptions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"subscriptions"
+							]
+						}
+					}
+				},
+				{
+					"name": "قبول الاشتراك (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"admin_notes\": \"تم قبول الاشتراك بعد التحقق من الدفع\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/subscriptions/1/approve",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"subscriptions",
+								"1",
+								"approve"
+							]
+						}
+					}
+				},
+				{
+					"name": "رفض الاشتراك (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"admin_notes\": \"لم يتم استلام الدفع في الوقت المحدد\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/subscriptions/1/reject",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"subscriptions",
+								"1",
+								"reject"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "💬 Comments",
+			"item": [
+				{
+					"name": "إضافة تعليق",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"lesson_id\": 1,\n    \"content\": \"درس مفيد جداً، شكراً للمعلمة\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/comments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"comments"
+							]
+						}
+					}
+				},
+				{
+					"name": "تعليقات الدرس",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/lessons/1/comments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"lessons",
+								"1",
+								"comments"
+							]
+						}
+					}
+				},
+				{
+					"name": "تعليقاتي",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/my-comments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"my-comments"
+							]
+						}
+					}
+				},
+				{
+					"name": "حذف تعليق",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/comments/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"comments",
+								"1"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "⭐ Favorites",
+			"item": [
+				{
+					"name": "إضافة للمفضلة",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/favorite/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"favorite",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "إزالة من المفضلة",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/favorite/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"favorite",
+								"1"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🔔 Notifications",
+			"item": [
+				{
+					"name": "جميع الإشعارات",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/notifications",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notifications"
+							]
+						}
+					}
+				},
+				{
+					"name": "عدد الإشعارات غير المقروءة",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/notifications/unread-count",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notifications",
+								"unread-count"
+							]
+						}
+					}
+				},
+				{
+					"name": "تفاصيل إشعار",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/notifications/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notifications",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "تمييز إشعار كمقروء",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/notifications/1/read",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notifications",
+								"1",
+								"read"
+							]
+						}
+					}
+				},
+				{
+					"name": "تمييز جميع الإشعارات كمقروءة",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/notifications/mark-all-read",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notifications",
+								"mark-all-read"
+							]
+						}
+					}
+				},
+				{
+					"name": "حذف إشعار",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/notifications/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"notifications",
+								"1"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "📊 Admin - Dashboard",
+			"item": [
+				{
+					"name": "إحصائيات لوحة التحكم",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/dashboard/stats",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"dashboard",
+								"stats"
+							]
+						}
+					}
+				},
+				{
+					"name": "جميع المستخدمين",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users"
+							]
+						}
+					}
+				},
+				{
+					"name": "تفاصيل مستخدم",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/users/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "تحديث مستخدم",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"أحمد محمد محدث\",\n    \"email\": \"ahmed_updated@example.com\",\n    \"phone\": \"01234567891\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/users/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users",
+								"1"
+							]
+						}
+					}
+				},
+				{
+					"name": "حذف مستخدم",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/users/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"users",
+								"1"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🏥 Health Check",
+			"item": [
+				{
+					"name": "فحص حالة API",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					}
+				},
+				{
+					"name": "فحص صحة النظام",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"health"
+							]
+						}
+					}
+				}
+			]
+		}
+	]
+}

@@ -110,6 +110,21 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Lessons
     Route::get('courses/{id}/lessons',                 [LessonController::class, 'index']);
     Route::get('lessons/{id}',                         [LessonController::class, 'show']);
+    
+    // Video Streaming
+    Route::get('lessons/{lesson}/video/stream',        [LessonVideoController::class, 'stream'])
+         ->name('lesson.video.stream')
+         ->middleware(['auth:sanctum', 'throttle:30,1', PreventVideoDownload::class]);
+    
+    // Playlists
+    Route::get('courses/{id}/playlist',                [PlaylistController::class, 'getCoursePlaylist'])
+         ->name('api.courses.playlist');
+    Route::get('courses/{courseId}/lessons/{lessonId}/next',     [PlaylistController::class, 'getNextLesson'])
+         ->name('api.courses.lessons.next');
+    Route::get('courses/{courseId}/lessons/{lessonId}/previous', [PlaylistController::class, 'getPreviousLesson'])
+         ->name('api.courses.lessons.previous');
+    Route::get('courses/{courseId}/lessons/{lessonId}/position', [PlaylistController::class, 'getLessonPosition'])
+         ->name('api.courses.lessons.position');
 
     // Ratings
     Route::post('ratings',                             [RatingController::class, 'store']);
@@ -152,6 +167,11 @@ Route::middleware(['auth:sanctum', AdminMiddleware::class])
         Route::get('pending',                 [CommentController::class, 'getPendingComments']);
         Route::post('{id}/approve',           [CommentController::class, 'approveComment']);
     });
+
+    // Video Management
+    Route::post('lessons/{lesson}/video/upload',      [LessonVideoController::class, 'upload']);
+    Route::delete('lessons/{lesson}/video',           [LessonVideoController::class, 'delete']);
+    Route::get('lessons/{lesson}/video/info',         [LessonController::class, 'getVideoInfo']);
 
     // Admin Subscriptions
     Route::get('subscriptions',               [SubscriptionController::class, 'adminIndex']);

@@ -297,7 +297,24 @@ class LessonController extends Controller
                 $lesson->video_duration_formatted = $lesson->getFormattedDuration();
                 $lesson->video_size_formatted = $lesson->getFormattedSize();
                 $lesson->video_status_message = $lesson->getVideoStatusMessage();
+                $lesson->video_metadata = $lesson->video_metadata;
             }
+
+            // معلومات البلايليست
+            $lesson->playlist_info = [
+                'next_lesson_url' => route('api.courses.lessons.next', [
+                    'courseId' => $lesson->course_id,
+                    'lessonId' => $lesson->id
+                ]),
+                'previous_lesson_url' => route('api.courses.lessons.previous', [
+                    'courseId' => $lesson->course_id,
+                    'lessonId' => $lesson->id
+                ]),
+                'position_url' => route('api.courses.lessons.position', [
+                    'courseId' => $lesson->course_id,
+                    'lessonId' => $lesson->id
+                ])
+            ];
 
             return $this->successResponse($lesson, 'تم جلب الدرس بنجاح');
 
